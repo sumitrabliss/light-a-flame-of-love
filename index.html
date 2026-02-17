@@ -93,6 +93,31 @@
             100% { transform: scale(1.3) translateY(-8px); opacity: 1; box-shadow: 0 0 30px var(--flame-amber), 0 0 60px var(--divine-gold); }
         }
 
+        /* --- Rainbow Heart Marker --- */
+        .rainbow-heart-wrapper {
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: heartFloat 4s infinite ease-in-out;
+        }
+        .rainbow-heart-marker {
+            width: 30px;
+            height: 30px;
+            fill: url(#rainbowGradient);
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+            animation: heartBeat 2s infinite ease-in-out alternate;
+        }
+        @keyframes heartFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes heartBeat {
+            0% { transform: scale(0.9); }
+            100% { transform: scale(1.3); }
+        }
+
         /* --- Ritual Pulse Effect --- */
         .ritual-pulse {
             border: 1px solid rgba(251, 191, 36, 0.3);
@@ -170,6 +195,21 @@
 </script>
 </head>
 <body class="selection:bg-rose-500/30">
+    <!-- SVG Gradients for Markers -->
+    <svg style="width:0;height:0;position:absolute;" aria-hidden="true">
+        <defs>
+            <linearGradient id="rainbowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#ff0000;stop-opacity:1" />
+                <stop offset="16%" style="stop-color:#ff7f00;stop-opacity:1" />
+                <stop offset="33%" style="stop-color:#ffff00;stop-opacity:1" />
+                <stop offset="50%" style="stop-color:#00ff00;stop-opacity:1" />
+                <stop offset="66%" style="stop-color:#0000ff;stop-opacity:1" />
+                <stop offset="83%" style="stop-color:#4b0082;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#9400d3;stop-opacity:1" />
+            </linearGradient>
+        </defs>
+    </svg>
+
     <div id="root"></div>
 
     <script type="module">
@@ -178,6 +218,31 @@
 
         // --- CONFIGURATION ---
         const GAS_URL = "https://script.google.com/macros/s/AKfycbzJHC7Rtm-A0yibWSy9mNz0Ofcd7TDOvcg6EVd383M9pdobQk6TO7PBLfk4B_-D614wtQ/exec";
+
+        // --- SACRED ANCHORS (RAINBOW HEARTS) ---
+        const SACRED_ANCHORS = [
+            { name: "Heart of Oceania", location: "Australia", lat: -25.2744, lng: 133.7751 },
+            { name: "Dragon Heart Anchor", location: "Hong Kong", lat: 22.3193, lng: 114.1694 },
+            { name: "Lotus Heart", location: "Phuket, Thailand", lat: 7.8804, lng: 98.3923 },
+            { name: "Eternal Island Heart", location: "Ko Phan Gan, Thailand", lat: 9.7323, lng: 100.0136 },
+            { name: "Himalayan Soul Core", location: "Nepal", lat: 28.3949, lng: 84.1240 },
+            { name: "Sacred Ganges Resonance", location: "India", lat: 20.5937, lng: 78.9629 },
+            { name: "Pearl Heart Anchor", location: "Sri Lanka", lat: 7.8731, lng: 80.7718 },
+            { name: "Table Mountain Portal", location: "Cape Town, South Africa", lat: -33.9249, lng: 18.4241 },
+            { name: "Atlantic Light Anchor", location: "Nordhoek, South Africa", lat: -34.1030, lng: 18.3653 },
+            { name: "Northern Light Core", location: "Finland", lat: 61.9241, lng: 25.7482 },
+            { name: "Ancient Stones Portal", location: "Externsteine, Germany", lat: 51.8694, lng: 8.9174 },
+            { name: "Heart of Bavaria", location: "Munich, Germany", lat: 48.1351, lng: 11.5820 },
+            { name: "Capital Light Anchor", location: "Berlin, Germany", lat: 52.5200, lng: 13.4050 },
+            { name: "Mediterranean Soul", location: "Italy", lat: 41.8719, lng: 12.5674 },
+            { name: "Garden of Earth", location: "Netherlands", lat: 52.1326, lng: 5.2913 },
+            { name: "The White Isle Heart", location: "Ibiza", lat: 38.9067, lng: 1.4206 },
+            { name: "Amazonian Heart Pulse", location: "Brazil", lat: -14.2350, lng: -51.9253 },
+            { name: "Andean Sky Anchor", location: "Colombia", lat: 4.5709, lng: -74.2973 },
+            { name: "Middle of the World Heart", location: "Ecuador", lat: -1.8312, lng: -78.1834 },
+            { name: "Solar Heart Temple", location: "Mexico", lat: 23.6345, lng: -102.5528 },
+            { name: "Pacific Light Gateway", location: "California, USA", lat: 36.7783, lng: -119.4179 }
+        ];
 
         // --- Theme Management ---
         const ThemeContext = createContext({ theme: 'dark', toggleTheme: () => {} });
@@ -242,6 +307,7 @@
             const mapRef = useRef(null);
             const mapInstance = useRef(null);
             const markersLayer = useRef(null);
+            const anchorsLayer = useRef(null);
             const tileLayerRef = useRef(null);
 
             const loadExistingFlames = async () => {
@@ -274,6 +340,7 @@
                 
                 mapInstance.current = map;
                 markersLayer.current = L.layerGroup().addTo(map);
+                anchorsLayer.current = L.layerGroup().addTo(map);
 
                 // Re-calculate size when container changes to avoid "clunky" gray borders
                 const resizeObserver = new ResizeObserver(() => {
@@ -302,6 +369,34 @@
                     fadeAnimation: true,
                     crossOrigin: true
                 }).addTo(mapInstance.current);
+
+                // Clear and Redraw Anchors
+                if (anchorsLayer.current) {
+                    anchorsLayer.current.clearLayers();
+                    SACRED_ANCHORS.forEach(a => {
+                        const icon = L.divIcon({
+                            className: '',
+                            html: `
+                                <div class="rainbow-heart-wrapper">
+                                    <svg class="rainbow-heart-marker" viewBox="0 0 24 24">
+                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                    </svg>
+                                </div>
+                            `,
+                            iconSize: [34, 34],
+                            iconAnchor: [17, 17]
+                        });
+                        L.marker([a.lat, a.lng], { icon }).addTo(anchorsLayer.current)
+                            .bindPopup(`
+                                <div class="text-center font-fancy p-2 min-w-[180px]">
+                                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-yellow-500 to-purple-500 font-black text-xl drop-shadow-sm uppercase tracking-tighter">${a.name}</span>
+                                    <div class="h-px w-full bg-gradient-to-r from-transparent via-white/40 to-transparent my-2"></div>
+                                    <span class="text-[10px] text-white opacity-90 uppercase tracking-[0.3em] font-black">${a.location}</span>
+                                    <p class="text-[8px] text-amber-400 mt-2 uppercase tracking-[0.2em]">Sacred Heart Anchor</p>
+                                </div>
+                            `, { className: 'crystal-popup' });
+                    });
+                }
 
                 if (markersLayer.current) {
                     markersLayer.current.clearLayers();
@@ -393,7 +488,30 @@
                                 React.createElement('p', null, "The flame is lit, and now the vision begins to gallop. On February 17, we enter a rare cosmic gateway, the arrival of the Fire Horse."),
                                 React.createElement('p', null, "Under the potent darkness of the New Moon, the \"blank slate\" of the universe, we anchor our collective claim for Paradise on Earth. While the start of the month was about the initial spark, this moment is about momentum. The Fire Horse brings the spirit of freedom, passion, and the swift transformation of our world."),
                                 React.createElement('p', null, "We rise above hemispheres to form a single, breathing grid of light. We are no longer just dreaming; we are in motion."),
-                                React.createElement('p', { className: "font-fancy text-amber-500 pt-4" }, "Add your light to the map. Join the global heartbeat as the journey accelerates.")
+                                
+                                // COLLABORATION SECTION (INSERTED HERE)
+                                React.createElement('div', { className: "mt-12 md:mt-24 p-8 md:p-16 glass rounded-[2rem] md:rounded-[3rem] border border-white/5 space-y-8 md:space-y-12" },
+                                    React.createElement('div', { className: "flex flex-col items-center gap-6" },
+                                        React.createElement('div', { className: "rainbow-heart-wrapper" },
+                                            React.createElement('svg', { className: "rainbow-heart-marker", style: { width: '48px', height: '48px' }, viewBox: "0 0 24 24" },
+                                                React.createElement('path', { d: "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" })
+                                            )
+                                        ),
+                                        React.createElement('h3', { className: "text-xl md:text-4xl font-fancy text-white tracking-widest leading-tight" }, "In Collaboration with I AM YOUNIVERSE")
+                                    ),
+                                    React.createElement('div', { className: "space-y-6 md:space-y-8 text-base md:text-2xl font-light opacity-90 leading-relaxed" },
+                                        React.createElement('p', null, "We are merging our fields with I AM YOUNIVERSE, a movement dedicated to the realization of our collective divinity."),
+                                        React.createElement('p', null, "They provide the foundational frequency of \"Oneness,\" reminding us that we are not just points on a map, but the universe experiencing itself. While we ignite the Flame of Love as a beacon of action, I AM YOUNIVERSE anchors the deep consciousness of unity that makes this transformation possible. Together, we are building the bridge between individual awakening and global resonance."),
+                                        React.createElement('a', { 
+                                            href: "https://iamyouniverse.org", 
+                                            target: "_blank", 
+                                            rel: "noopener noreferrer", 
+                                            className: "inline-block mt-4 text-amber-500 font-bold border-b border-amber-500/30 hover:border-amber-500 transition-all duration-300 tracking-widest text-sm md:text-lg"
+                                        }, "Deepen your connection: iamyouniverse.org")
+                                    )
+                                ),
+
+                                React.createElement('p', { className: "font-fancy text-amber-500 pt-12 md:pt-16" }, "Add your light to the map. Join the global heartbeat as the journey accelerates.")
                             ),
                             React.createElement('div', { className: "ritual-pulse mt-12 p-8 md:p-16 rounded-[2.5rem] md:rounded-[4rem] glass backdrop-blur-2xl" },
                                 React.createElement('h3', { className: "text-xl md:text-3xl font-fancy text-amber-500 mb-6 uppercase tracking-widest" }, "The Ritual"),
