@@ -5,11 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Light a Flame of Love | Global Resonance 2026</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Leaflet Map CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Montserrat:wght@100;200;300;400;600&display=swap" rel="stylesheet">
@@ -178,7 +175,6 @@
             50% { opacity: 1; filter: brightness(1.3); transform: scale(1.02); }
         }
 
-        /* Fix for Leaflet tile lines */
         .leaflet-tile-container img {
             outline: 1px solid transparent;
         }
@@ -195,7 +191,6 @@
 </script>
 </head>
 <body class="selection:bg-rose-500/30">
-    <!-- SVG Gradients for Markers -->
     <svg style="width:0;height:0;position:absolute;" aria-hidden="true">
         <defs>
             <linearGradient id="rainbowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -216,10 +211,8 @@
         import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
         import ReactDOM from 'react-dom/client';
 
-        // --- CONFIGURATION ---
         const GAS_URL = "https://script.google.com/macros/s/AKfycbzJHC7Rtm-A0yibWSy9mNz0Ofcd7TDOvcg6EVd383M9pdobQk6TO7PBLfk4B_-D614wtQ/exec";
 
-        // --- SACRED ANCHORS (RAINBOW HEARTS) ---
         const SACRED_ANCHORS = [
             { name: "Heart of Oceania", location: "Australia", lat: -25.2744, lng: 133.7751 },
             { name: "Dragon Heart Anchor", location: "Hong Kong", lat: 22.3193, lng: 114.1694 },
@@ -244,7 +237,6 @@
             { name: "Pacific Light Gateway", location: "California, USA", lat: 36.7783, lng: -119.4179 }
         ];
 
-        // --- Theme Management ---
         const ThemeContext = createContext({ theme: 'dark', toggleTheme: () => {} });
 
         const ThemeProvider = ({ children }) => {
@@ -258,7 +250,6 @@
 
         const useTheme = () => useContext(ThemeContext);
 
-        // --- Geocoding Helper ---
         const geocode = async (location) => {
             try {
                 const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}&limit=1`);
@@ -270,7 +261,6 @@
             return null;
         };
 
-        // --- Header Component ---
         const Header = () => {
             const { theme, toggleTheme } = useTheme();
             return React.createElement('header', { className: "sticky top-0 z-50 w-full glass border-b border-white/10 px-4 md:px-8 py-4 md:py-6 flex justify-between items-center backdrop-blur-3xl" },
@@ -297,7 +287,6 @@
             );
         };
 
-        // --- Main App Component ---
         const App = () => {
             const { theme } = useTheme();
             const [flames, setFlames] = useState([]);
@@ -327,13 +316,12 @@
             useEffect(() => {
                 if (!mapRef.current) return;
                 
-                // Initialize map with improved smooth options
                 const map = L.map(mapRef.current, { 
                     center: [20, 0], 
                     zoom: 2.5, 
                     zoomControl: false, 
                     attributionControl: false,
-                    scrollWheelZoom: false, // Prevents scroll hijacking unless clicked
+                    scrollWheelZoom: false,
                     tap: true,
                     worldCopyJump: true
                 });
@@ -342,7 +330,6 @@
                 markersLayer.current = L.layerGroup().addTo(map);
                 anchorsLayer.current = L.layerGroup().addTo(map);
 
-                // Re-calculate size when container changes to avoid "clunky" gray borders
                 const resizeObserver = new ResizeObserver(() => {
                     map.invalidateSize();
                 });
@@ -370,7 +357,6 @@
                     crossOrigin: true
                 }).addTo(mapInstance.current);
 
-                // Clear and Redraw Anchors
                 if (anchorsLayer.current) {
                     anchorsLayer.current.clearLayers();
                     SACRED_ANCHORS.forEach(a => {
@@ -442,7 +428,6 @@
                     setStatus('success');
                     setForm({ name: '', email: '', location: '' });
                     
-                    // Fly to location smoothly
                     mapInstance.current.flyTo([coords.lat, coords.lng], 7, { 
                         animate: true,
                         duration: 3.5,
@@ -481,39 +466,35 @@
                             )
                         ),
 
-                        // LIVING PRAYER SECTION - EQUINOX MARCH 21
+                        // EQUINOX SECTION
                         React.createElement('section', { className: "max-w-5xl mx-auto text-center space-y-12 md:space-y-16 py-8" },
                             React.createElement('h2', { className: "text-3xl md:text-6xl font-fancy text-shimmer px-4" }, "The Great Equinox"),
                             React.createElement('div', { className: "space-y-8 md:space-y-12 text-lg md:text-3xl font-light opacity-90 leading-relaxed px-4 md:px-12" },
                                 React.createElement('p', null, "The flame is anchored, and now the vision begins to bloom. On March 21, we cross a sacred threshold: the Spring Equinox—the moment of perfect cosmic balance."),
-                                React.createElement('p', null, "Under the equal light of day and night, the \"Great Breath\" of the Earth, we harmonize our collective claim for Paradise on Earth. While the past weeks were about the wild gallop of the Fire Horse, this moment is about Emergence. The Equinox brings the spirit of rebirth, clarity, and the steady blossoming of our shared world."),
-                                React.createElement('p', null, "We rise above hemispheres to form a balanced, radiant grid of light. We are no longer just in motion; we are becoming. As the light begins to outshine the dark, we stand together as the bridge between Heaven and Earth."),
-                            )
-                        ),
-                                
-                                // COLLABORATION SECTION (INSERTED HERE)
-                                React.createElement('div', { className: "mt-12 md:mt-24 p-8 md:p-16 glass rounded-[2rem] md:rounded-[3rem] border border-white/5 space-y-8 md:space-y-12" },
-                                    React.createElement('div', { className: "flex flex-col items-center gap-6" },
-                                        React.createElement('div', { className: "rainbow-heart-wrapper" },
-                                            React.createElement('svg', { className: "rainbow-heart-marker", style: { width: '48px', height: '48px' }, viewBox: "0 0 24 24" },
-                                                React.createElement('path', { d: "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" })
-                                            )
-                                        ),
-                                        React.createElement('h3', { className: "text-xl md:text-4xl font-fancy text-white tracking-widest leading-tight" }, "In Collaboration with I AM YOUNIVERSE")
+                                React.createElement('p', null, "Under the equal light of day and night, the \"Great Breath\" of the Earth, we harmonize our collective claim for Paradise on Earth."),
+                                React.createElement('p', null, "We rise above hemispheres to form a balanced, radiant grid of light. As the light begins to outshine the dark, we stand together as the bridge between Heaven and Earth.")
+                            ),
+                            
+                            // COLLABORATION
+                            React.createElement('div', { className: "mt-12 md:mt-24 p-8 md:p-16 glass rounded-[2rem] md:rounded-[3rem] border border-white/5 space-y-8 md:space-y-12" },
+                                React.createElement('div', { className: "flex flex-col items-center gap-6" },
+                                    React.createElement('div', { className: "rainbow-heart-wrapper" },
+                                        React.createElement('svg', { className: "rainbow-heart-marker", style: { width: '48px', height: '48px' }, viewBox: "0 0 24 24" },
+                                            React.createElement('path', { d: "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" })
+                                        )
                                     ),
-                                    React.createElement('div', { className: "space-y-6 md:space-y-8 text-base md:text-2xl font-light opacity-90 leading-relaxed" },
-                                        React.createElement('p', null, "We are merging our fields with I AM YOUNIVERSE, a movement dedicated to the realization of our collective divinity."),
-                                        React.createElement('p', null, "They provide the foundational frequency of \"Oneness,\" reminding us that we are not just points on a map, but the universe experiencing itself. While we ignite the Flame of Love as a beacon of action, I AM YOUNIVERSE anchors the deep consciousness of unity that makes this transformation possible. Together, we are building the bridge between individual awakening and global resonance."),
-                                        React.createElement('a', { 
-                                            href: "https://iamyouniverse.org", 
-                                            target: "_blank", 
-                                            rel: "noopener noreferrer", 
-                                            className: "inline-block mt-4 text-amber-500 font-bold border-b border-amber-500/30 hover:border-amber-500 transition-all duration-300 tracking-widest text-sm md:text-lg"
-                                        }, "Deepen your connection: iamyouniverse.org")
-                                    )
+                                    React.createElement('h3', { className: "text-xl md:text-4xl font-fancy text-white tracking-widest leading-tight" }, "In Collaboration with I AM YOUNIVERSE")
                                 ),
-
-                                React.createElement('p', { className: "font-fancy text-amber-500 pt-12 md:pt-16" }, "Add your light to the map. Join the global heartbeat as the journey accelerates.")
+                                React.createElement('div', { className: "space-y-6 md:space-y-8 text-base md:text-2xl font-light opacity-90 leading-relaxed" },
+                                    React.createElement('p', null, "We are merging our fields with I AM YOUNIVERSE, a movement dedicated to the realization of our collective divinity."),
+                                    React.createElement('p', null, "Together, we are building the bridge between individual awakening and global resonance."),
+                                    React.createElement('a', { 
+                                        href: "https://iamyouniverse.org", 
+                                        target: "_blank", 
+                                        rel: "noopener noreferrer", 
+                                        className: "inline-block mt-4 text-amber-500 font-bold border-b border-amber-500/30 hover:border-amber-500 transition-all duration-300 tracking-widest text-sm md:text-lg"
+                                    }, "Deepen your connection: iamyouniverse.org")
+                                )
                             ),
                             React.createElement('div', { className: "ritual-pulse mt-12 p-8 md:p-16 rounded-[2.5rem] md:rounded-[4rem] glass backdrop-blur-2xl" },
                                 React.createElement('h3', { className: "text-xl md:text-3xl font-fancy text-amber-500 mb-6 uppercase tracking-widest" }, "The Ritual"),
@@ -532,118 +513,64 @@
                             )
                         ),
 
-                        // SIGNUP FORM SECTION
+                        // SIGNUP FORM
                         React.createElement('section', { id: "signup", className: "max-w-4xl mx-auto glass crystal-border p-8 md:p-20 lg:p-36 space-y-12 md:space-y-20 shadow-2xl" },
                             status === 'success' ? (
-                                React.createElement('div', { className: "text-center py-12 md:py-28 space-y-8 md:space-y-12 animate-in fade-in zoom-in-95 duration-700" },
-                                    React.createElement('div', { className: "w-24 h-24 md:w-40 md:h-40 bg-gradient-to-tr from-amber-500 via-rose-600 to-indigo-900 rounded-full mx-auto flex items-center justify-center shadow-2xl border-4 md:border-8 border-white/10" },
-                                        React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", className: "h-12 w-12 md:h-20 md:w-20 text-white", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
-                                            React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 3, d: "M5 13l4 4L19 7" })
-                                        )
-                                    ),
-                                    React.createElement('div', { className: "space-y-6 md:space-y-8" },
-                                        React.createElement('h2', { className: "text-4xl md:text-7xl font-fancy text-amber-500" }, "Your Flame is Eternal"),
-                                        React.createElement('p', { className: "opacity-80 uppercase tracking-[0.3em] md:tracking-[0.5em] text-[10px] md:text-sm font-black" }, "Harmonization Complete.")
-                                    ),
-                                    React.createElement('button', { onClick: () => setStatus('idle'), className: "text-amber-500 font-black uppercase tracking-widest text-xs mt-8 hover:opacity-70 transition-opacity" }, "Light another flame?")
+                                React.createElement('div', { className: "text-center space-y-8 animate-pulse" },
+                                    React.createElement('div', { className: "text-6xl md:text-8xl" }, "🔥"),
+                                    React.createElement('h3', { className: "text-3xl md:text-5xl font-fancy text-amber-500" }, "Flame Ignited"),
+                                    React.createElement('p', { className: "text-xl md:text-2xl opacity-70" }, "Your light is now part of the global resonance. Thank you for being the bridge.")
                                 )
                             ) : (
-                                React.createElement('form', { onSubmit: handleSubmit, className: "space-y-10 md:space-y-16" },
-                                    React.createElement('div', { className: "text-center mb-4" },
-                                        React.createElement('p', { className: "text-lg md:text-2xl font-light opacity-70 tracking-wide italic" }, "Add your light to the map. Join the global field.")
+                                React.createElement('form', { onSubmit: handleSubmit, className: "space-y-8 md:space-y-12" },
+                                    React.createElement('div', { className: "text-center space-y-4" },
+                                        React.createElement('h2', { className: "text-3xl md:text-6xl font-fancy" }, "Join the Grid"),
+                                        React.createElement('p', { className: "text-lg md:text-xl opacity-60 uppercase tracking-widest font-light" }, "Anchor your presence")
                                     ),
-                                    React.createElement('div', { className: "space-y-4 md:space-y-6" },
-                                        React.createElement('label', { className: "text-[10px] uppercase tracking-[0.5em] font-black opacity-30 ml-4 md:ml-10" }, "Name"),
-                                        React.createElement('input', { required: true, placeholder: "Your Name", className: inputClass, value: form.name, onChange: e => setForm({...form, name: e.target.value}) })
+                                    React.createElement('div', { className: "space-y-6 md:space-y-10" },
+                                        React.createElement('input', { 
+                                            required: true, 
+                                            placeholder: "Your Sacred Name", 
+                                            className: inputClass,
+                                            value: form.name,
+                                            onChange: e => setForm({...form, name: e.target.value})
+                                        }),
+                                        React.createElement('input', { 
+                                            required: true, 
+                                            type: "email", 
+                                            placeholder: "Soul Email", 
+                                            className: inputClass,
+                                            value: form.email,
+                                            onChange: e => setForm({...form, email: e.target.value})
+                                        }),
+                                        React.createElement('input', { 
+                                            required: true, 
+                                            placeholder: "City, Country", 
+                                            className: inputClass,
+                                            value: form.location,
+                                            onChange: e => setForm({...form, location: e.target.value})
+                                        })
                                     ),
-                                    React.createElement('div', { className: "space-y-4 md:space-y-6" },
-                                        React.createElement('label', { className: "text-[10px] uppercase tracking-[0.5em] font-black opacity-30 ml-4 md:ml-10" }, "e-mail"),
-                                        React.createElement('input', { required: true, type: "email", placeholder: "Your e-mail", className: inputClass, value: form.email, onChange: e => setForm({...form, email: e.target.value}) })
-                                    ),
-                                    React.createElement('div', { className: "space-y-4 md:space-y-6" },
-                                        React.createElement('label', { className: "text-[10px] uppercase tracking-[0.5em] font-black opacity-30 ml-4 md:ml-10" }, "location"),
-                                        React.createElement('input', { required: true, placeholder: "City, Country", className: inputClass, value: form.location, onChange: e => setForm({...form, location: e.target.value}) })
-                                    ),
-                                    React.createElement('button', { type: "submit", disabled: status === 'loading', className: "w-full py-6 md:py-10 rounded-[2rem] md:rounded-[3.5rem] bg-gradient-to-r from-amber-500 via-rose-600 to-indigo-950 text-white font-fancy font-black tracking-widest md:tracking-[0.7em] uppercase shadow-2xl transition-all transform hover:scale-[1.02] disabled:opacity-50 active:scale-95 text-sm md:text-base" },
-                                        status === 'loading' ? 'Weaving...' : 'IGNITE'
-                                    ),
-                                    React.createElement('p', { className: "text-center text-[10px] uppercase tracking-[0.4em] opacity-30 italic pt-4" }, "Your sovereignty is honored.")
-                                )
-                            )
-                        ),
-
-                        // RESONATING COLLECTIVE SECTION
-                        React.createElement('section', { className: "text-center space-y-16 md:space-y-24 py-12 md:py-32 px-2 max-w-6xl mx-auto overflow-hidden" },
-                            React.createElement('div', { className: "space-y-8 md:space-y-12" },
-                                React.createElement('h2', { className: "text-4xl md:text-8xl font-fancy text-shimmer leading-tight tracking-tight" }, "A Resonating Collective"),
-                                React.createElement('p', { className: "max-w-4xl mx-auto text-lg md:text-3xl font-light opacity-80 leading-relaxed tracking-wide px-2" }, "When we collectively hold the frequency of peace, we provide a stabilizing field that ripples through the very fabric of existence.")
-                            ),
-                            React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 pt-8" },
-                                [
-                                    { title: 'Unity', desc: 'Dissolving the illusion of separation into a singular resonant wave of pure love.', icon: 'M12 4v16m8-8H4' },
-                                    { title: 'Radiance', desc: 'Becoming the crystal lens through which the eternal light of truth illuminates the shadow.', icon: 'M12 3v1m0 16v1m9-9h-1M4 12H3' },
-                                    { title: 'Remember', desc: 'Reclaiming the divine power of intention to heal, restore, and transform our reality.', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' }
-                                ].map((item, idx) => (
-                                    React.createElement('div', { key: idx, className: "group relative p-10 md:p-14 rounded-[2.5rem] md:rounded-[3.5rem] glass crystal-border transition-all duration-500 hover:-translate-y-3" },
-                                        React.createElement('div', { className: "w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-tr from-amber-400/10 to-rose-500/10 flex items-center justify-center mb-8 mx-auto" },
-                                            React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", className: `h-8 w-8 md:h-10 md:w-10 ${theme === 'dark' ? 'text-amber-400' : 'text-indigo-800'}`, fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
-                                                React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 1.5, d: item.icon })
-                                            )
-                                        ),
-                                        React.createElement('h3', { className: "text-xl md:text-3xl font-fancy mb-4 tracking-widest uppercase text-amber-500" }, item.title),
-                                        React.createElement('p', { className: "text-sm md:text-lg font-light leading-relaxed opacity-70" }, item.desc)
-                                    )
-                                ))
-                            )
-                        ),
-
-                        // THE JOURNEY CONTINUES SECTION
-                        React.createElement('section', { className: "max-w-6xl mx-auto space-y-20 md:space-y-32 py-16 md:py-32" },
-                            React.createElement('div', { className: "text-center space-y-12 md:space-y-16" },
-                                React.createElement('h2', { className: "text-4xl md:text-8xl font-fancy text-shimmer leading-tight" }, "The Journey Continues"),
-                                React.createElement('p', { className: "max-w-5xl mx-auto text-xl md:text-4xl font-extralight opacity-80 leading-relaxed italic px-2" }, "The 21th of March is just the ignition. Our vision is to maintain this planetary grid as a living, breathing sanctuary for Peace and the manifestation of Paradise on Earth.")
-                            ),
-                            React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16" },
-                                React.createElement('div', { className: "p-10 md:p-16 rounded-[2.5rem] md:rounded-[4rem] glass crystal-border space-y-6 md:space-y-10 group transition-all" },
-                                    React.createElement('h3', { className: "text-2xl md:text-3xl font-fancy text-amber-500 uppercase tracking-widest" }, "De-centralized Unity"),
-                                    React.createElement('p', { className: "text-base md:text-xl font-light opacity-70 leading-relaxed" }, "We are not building a top-down organization. We are weaving a decentralized web of local guardians. Soon, we will offer synchronized global meditations and tools to help you anchor this frequency in your own community.")
-                                ),
-                                React.createElement('div', { className: "p-10 md:p-16 rounded-[2.5rem] md:rounded-[4rem] glass crystal-border space-y-6 md:space-y-10 group transition-all" },
-                                    React.createElement('h3', { className: "text-2xl md:text-3xl font-fancy text-amber-500 uppercase tracking-widest" }, "Claiming Paradise"),
-                                    React.createElement('p', { className: "text-base md:text-xl font-light opacity-70 leading-relaxed" }, "Together, we claim the Earth as a garden of peace. This is where we stop waiting for change and start being the architects of the new reality.")
-                                )
-                            ),
-                            React.createElement('div', { className: "text-center pt-12 md:pt-16 px-4" },
-                                React.createElement('a', { 
-                                    href: "https://t.me/+iXVUcL96inczZjVi", 
-                                    target: "_blank", 
-                                    rel: "noopener noreferrer", 
-                                    className: "inline-block w-full sm:w-auto px-10 md:px-16 py-6 md:py-10 rounded-full font-fancy font-black tracking-widest uppercase bg-gradient-to-r from-blue-500 to-indigo-800 text-white shadow-2xl transition-all transform hover:scale-105 active:scale-95 text-sm md:text-base"
-                                },
-                                    React.createElement('span', { className: "relative z-10 flex items-center justify-center gap-4" },
-                                        React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", className: "h-6 w-6 md:h-8 md:w-8", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
-                                            React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M12 19l9 2-9-18-9 18 9-2zm0 0v-8" })
-                                        ),
-                                        "Join the Collective on Telegram"
-                                    )
+                                    React.createElement('button', { 
+                                        type: "submit", 
+                                        disabled: status === 'loading',
+                                        className: "w-full py-6 md:py-10 rounded-full bg-white text-black font-fancy font-black uppercase tracking-[0.4em] text-xl md:text-2xl hover:bg-amber-500 transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50"
+                                    }, status === 'loading' ? "Igniting..." : "Light my flame")
                                 )
                             )
                         )
                     ),
-                    React.createElement('footer', { className: "py-20 md:py-32 text-center opacity-40 border-t border-white/5 space-y-10" },
-                        React.createElement('p', { className: "font-fancy text-2xl md:text-3xl tracking-widest font-black text-shimmer" }, "LIGHT A FLAME OF LOVE"),
-                        React.createElement('div', { className: "flex flex-col items-center gap-4 text-[10px] md:text-[12px] font-black uppercase tracking-widest" },
-                            React.createElement('a', { href: "https://www.instagram.com/ashilovestar/", target: "_blank", rel: "noopener noreferrer", className: "hover:text-amber-500 transition-colors" }, "Vision by Ashi Love Star"),
-                            React.createElement('a', { href: "https://www.linkedin.com/in/luca-fischer-87b2ba204/", target: "_blank", rel: "noopener noreferrer", className: "hover:text-amber-500 transition-colors" }, "Build by Luca Sumitra")
-                        ),
-                        React.createElement('p', { className: "text-[9px] md:text-[11px] tracking-widest font-bold opacity-30 mt-8" }, "ESTABLISHED FOR THE GREAT AWAKENING • 2026")
+                    
+                    // FOOTER
+                    React.createElement('footer', { className: "py-20 text-center opacity-30 text-[10px] md:text-xs tracking-[0.5em] uppercase font-fancy" },
+                        "The Age of Love - 2026 Resonance"
                     )
                 )
             );
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(React.createElement(ThemeProvider, null, React.createElement(App)));
+        const Root = () => React.createElement(ThemeProvider, null, React.createElement(App));
+        ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(Root));
     </script>
 </body>
 </html>
